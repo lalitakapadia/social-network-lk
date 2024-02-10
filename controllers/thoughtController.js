@@ -6,8 +6,9 @@ module.exports = {
     //Get all thoughts
     async getAllThoughts(req,res) {
         try {
-            const thoughts = await Thought.find()
-            .populate('thoughts');
+            const thoughts = await Thought.find();
+           
+            
 
             if(!thoughts) {
                 return res.status(404).json({error: 'No thoughts found'});
@@ -24,7 +25,7 @@ module.exports = {
                 const thought = await Thought.findById({ _id: req.params.thoughtById })
                 .populate('thought')
                 if(!thought){
-                    return res.status(404).json({error: 'Thought not found'});
+                    return res.status(404).json({error: 'Thought not found with that id'});
                 }
                 res.status(200).json(thought);                
             } catch(err) {
@@ -32,15 +33,16 @@ module.exports = {
                 response.status(500).json(err);
             }
         },
-        // craete a thought
-        async cteateThought(req, res) {
+        // craete a new thought
+        async createThought(req, res) {
             try {
-                const createThoyght = await thought.create(req.body);
+                const newThought = await Thought.create(req.body);
+                console.log(newThought);
                 await User.findOneAndUpdate(
                     {username: req.body.username},
-                    {$push: {thoughts: thought}}
+                    {$push: {thoughts: newThought.id}}
                 );
-                res.json(createThoyght);
+                res.json(newThought);
             } catch(err) {
                 console.log(err);
                 return res.status(500).json(err);

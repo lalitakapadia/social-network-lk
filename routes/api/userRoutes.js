@@ -14,7 +14,7 @@ const {
 // /api/users
 router.route('/').get(getUsers).post(createNewUser);
 
-// // /api/users/:userId
+// /api/users/:userId
 router.route('/userId').get(getUserById).put(updateUser).delete(deleteUser);
 
 // /api/users/:userId/friends/:friendId
