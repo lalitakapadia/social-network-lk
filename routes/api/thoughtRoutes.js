@@ -5,8 +5,8 @@ const {
     getAllThoughts,
     getThoughtById,
     createThought,
-    // findAndUpdateThought,
-    // deleteThought,
+    findAndUpdateThought,
+    deleteThought,
     // createReaction,
     // deleteReaction,
     
@@ -19,9 +19,9 @@ router.route('/')
 
 // /api/thoughts/:thoughtId
 router.route('/:thoughtId')
-.get(getThoughtById);
-//.put(findAndUpdateThought)
-//.delete(deleteThought);
+.get(getThoughtById)
+.put(findAndUpdateThought)
+.delete(deleteThought);
 
 // function for thoughtId and reaction
 // router.route('/: thoughtId/reactions')
