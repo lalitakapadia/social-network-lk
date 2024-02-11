@@ -22,8 +22,8 @@ module.exports = {
         // get thought by id
         async getThoughtById(req,res) {
             try {
-                const thought = await Thought.findById({ _id: req.params.thoughtById })
-                .populate('thought')
+                const thought = await Thought.findById(new ObjectId(req.params.thoughtById ));
+
                 if(!thought){
                     return res.status(404).json({error: 'Thought not found with that id'});
                 }
@@ -33,19 +33,55 @@ module.exports = {
                 response.status(500).json(err);
             }
         },
-        // craete a new thought
+        // create a new thought
         async createThought(req, res) {
             try {
                 const newThought = await Thought.create(req.body);
-                console.log(newThought);
                 await User.findOneAndUpdate(
                     {username: req.body.username},
-                    {$push: {thoughts: newThought.id}}
+                    {$push: {thoughts: newThought}}
                 );
-                res.json(newThought);
+                res.status(200).json(newThought);
             } catch(err) {
                 console.log(err);
                 return res.status(500).json(err);
             }
         },
+        //update thought function
+        async findAndUpdateThought(req, res) {
+            try {
+                const thought = await Thought.findOneAndUpdate(
+                    {_id: new Types.ObjectId(req.params.thoughtId)},
+                    req.body, {new: true}
+                );
+                if(!thought) {
+                    return res.status(404).json({erro: 'Thought not found'})
+                }
+                res.status(200).json(thought);
+            }  catch(err) {
+               console.error(err);
+               res.status(500).json(err);
+            }
+        },
+        // delete thought function
+        async deleteThought(req, res) {
+            try {
+              const thoughtId = req.params.thoughtId;
+              const thought = await Thought.findOneAndDelete({ _id: thoughtId });
+        
+              if (!thought) {
+                return res.status(404).json({ message: 'Thought not found!' });
+              }
+        
+              await User.updateMany(
+                { thoughts: thoughtId },
+                { $pull: { thoughts: thoughtId } },
+              );
+       
+              res.status(200).json({ message: 'Thought successfully deleted!' });
+            } catch (err) {
+              console.log(err);
+              res.status(500).json(err);
+            }
+          },
     }
