@@ -75,13 +75,47 @@ module.exports = {
         
               await User.updateMany(
                 { thoughts: thoughtId },
-                { $pull: { thoughts: thoughtId } },
-              );
+                { $pull: { thoughts: thoughtId } });
        
               res.status(200).json({ message: 'Thought successfully deleted!' });
             } catch (err) {
               console.log(err);
               res.status(500).json(err);
             }
-          },
-    }
+        },
+        // function for create reaction
+          async createReaction(req, res) {
+            try {
+              const thought = await Thought.findOneAndUpdate(
+                { _id: new Types.ObjectId(req.params.thoughtId) },
+                { $push: { reactions: req.body } },
+                { new: true }
+              );
+          
+              if (!thought) {
+                return res.status(404).json({ error: 'Thought not found' });
+              }
+          
+              res.status(200).json(thought);
+            } catch (err) {
+              res.status(500).json(err);
+            }
+        },
+        // function for delete reaction
+          async deleteReaction(req, res) {
+            try {
+              const thought = await Thought.findOneAndUpdate(
+                { _id: req.params.thoughtId },
+                { $pull: { reactions: { reactionId: new ObjectId(req.params.reactionId) } } }
+              );
+        
+              if (!thought) {
+                return res.status(404).json({ error: 'Thought not found' });
+              }
+        
+              res.status(200).json({ message: "Successfully Deleted!" })
+            } catch (err) {
+              res.status(500).json(err);
+            }
+        }
+    };
