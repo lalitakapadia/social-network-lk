@@ -65,7 +65,7 @@ module.exports = {
         try {
             const addFriend = await User.findOneAndUpdate(
                 {_id: req.params.userId},
-                {$addToSet: {friends: req.params.friendIds}},
+                {$addToSet: {friends: req.params.friendId}},
                 {new: true});
                 res.json(addFriend);
         }   catch (err) {
@@ -76,12 +76,12 @@ module.exports = {
      // function for delete friend
     async deleteFriend (req, res) {
         try {
-        const deleteFriend = await User.findOneAndDelete(
+        const deleteFriend = await User.findOneAndUpdate(
         { _id: req.params.userId},
-        {$pull: {friends: req.body.friendIds}},
+        {$pull: {friends: req.body.friendId}},
         {new: true});
 
-        res.json('That friend has been deleted');
+        res.json('That friend has been deleted by someone');
       } catch (err) {
         res.status(500).json(err);
       }

@@ -22,7 +22,7 @@ module.exports = {
         // get thought by id
         async getThoughtById(req,res) {
             try {
-                const thought = await Thought.findById(new ObjectId(req.params.thoughtById ));
+                const thought = await Thought.findById(new ObjectId(req.params.thoughtId ));
 
                 if(!thought){
                     return res.status(404).json({error: 'Thought not found with that id'});
@@ -55,7 +55,7 @@ module.exports = {
                     req.body, {new: true}
                 );
                 if(!thought) {
-                    return res.status(404).json({erro: 'Thought not found'})
+                    return res.status(404).json({error: 'Thought not found'})
                 }
                 res.status(200).json(thought);
             }  catch(err) {
