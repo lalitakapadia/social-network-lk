@@ -3,12 +3,12 @@ const { Types } = require('mongoose');
 const { ObjectId } = require('mongodb');
 
 module.exports = {
-    //Get all thoughts
+  // Function to get all of the thoughts by invoking the find() method with no arguments.
+  // Then we return the results as JSON, and catch any errors.
+  // Errors are sent as JSON with a message and a 500 status code
     async getAllThoughts(req,res) {
         try {
-            const thoughts = await Thought.find();
-           
-            
+            const thoughts = await Thought.find();            
 
             if(!thoughts) {
                 return res.status(404).json({error: 'No thoughts found'});
@@ -19,7 +19,8 @@ module.exports = {
                 response.status(500).json(err);
             }
         },
-        // get thought by id
+        // Gets a single thought using the findOne method.
+        // We pass in the ID of the thought and then respond with thought, or an error if not found
         async getThoughtById(req,res) {
             try {
                 const thought = await Thought.findById(new ObjectId(req.params.thoughtId ));
@@ -33,7 +34,10 @@ module.exports = {
                 response.status(500).json(err);
             }
         },
-        // create a new thought
+          // Creates a new thought. Accepts a request body with the entire Thought object.
+          // Because thoughts are associated with Users,
+          // we then update the User who created the app and add the ID of the application
+          // to the thoughts array / subdocument.
         async createThought(req, res) {
             try {
                 const newThought = await Thought.create(req.body);
@@ -47,7 +51,8 @@ module.exports = {
                 return res.status(500).json(err);
             }
         },
-        //update thought function
+        // Updates an thought using the findOneAndUpdate method.
+        // Uses the ID, and the $set operator in mongodb to inject the request body. Enforces validation.
         async findAndUpdateThought(req, res) {
             try {
                 const thought = await Thought.findOneAndUpdate(
@@ -63,7 +68,9 @@ module.exports = {
                res.status(500).json(err);
             }
         },
-        // delete thought function
+       // Deletes an thoguht from the database. Looks for an app by ID.
+       // Then if the app exists, we look for any users associated with the app based on he app ID
+       // and update the thoughts array for the User.
         async deleteThought(req, res) {
             try {
               const thoughtId = req.params.thoughtId;
@@ -83,7 +90,8 @@ module.exports = {
               res.status(500).json(err);
             }
         },
-        // function for create reaction
+        // Adds a reaction to an thought. This method is unique in that we add the entire body
+       // of the tag rather than the ID with the mongodb $push operator.
           async createReaction(req, res) {
             try {
               const thought = await Thought.findOneAndUpdate(
@@ -101,7 +109,9 @@ module.exports = {
               res.status(500).json(err);
             }
         },
-        // function for delete reaction
+        // Remove thought reaction. This method finds the thought based on ID.
+        // It then updates the reaction array associated with the app in question by removing it's thoughtId
+        // from the reactions array / subdocument list
           async deleteReaction(req, res) {
             try {
               const thought = await Thought.findOneAndUpdate(
