@@ -31,7 +31,7 @@ const thoughtSchema = new Schema(
     }
 );
 
-    // Create a virtual property `reaction` that gets the amount of reactoion per thought
+    // Create a virtual property `reaction` that gets the amount of reaction per thought
 thoughtSchema
     .virtual('reactionCount')
     .get(function(){
